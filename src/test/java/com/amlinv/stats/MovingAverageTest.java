@@ -207,4 +207,42 @@ public class MovingAverageTest {
         assertEquals(400.0, movingAverage.getAverage(), 0.0000001);
         assertEquals(1200.0 / 60, movingAverage.getFullPeriodAverage(), 0.0000001);
     }
+
+    @Test
+    public void testFifteenSecondIntervalsForOneHour() throws Exception {
+        MovingAverage movingAverage2 = new MovingAverage(15000, 240);
+
+        int iter = 0;
+        while ( iter < 240 ) {
+            movingAverage2.add(15000 * iter, 100);
+
+            iter++;
+
+            assertEquals(100.0, movingAverage2.getAverage(), 0.0000001);
+            assertEquals(iter * 100.0 / 240.0, movingAverage2.getFullPeriodAverage(), 0.0000001);
+        }
+
+        int timeSlot = iter;
+        iter = 0;
+        while ( iter < 240 ) {
+            movingAverage2.add(15000 * ( timeSlot ), 100);
+
+            iter++;
+            timeSlot++;
+
+            assertEquals(100.0, movingAverage2.getAverage(), 0.0000001);
+            assertEquals(100.0, movingAverage2.getFullPeriodAverage(), 0.0000001);
+        }
+
+        iter = 0;
+        while ( iter < 240 ) {
+            movingAverage2.add(15000 * ( timeSlot ), 0);
+
+            iter++;
+            timeSlot++;
+
+            assertEquals(100.0 - ( 100.0 * ( iter / 240.0 ) ), movingAverage2.getAverage(), 0.0000001);
+            assertEquals(100.0 - ( 100.0 * ( iter / 240.0 ) ), movingAverage2.getFullPeriodAverage(), 0.0000001);
+        }
+    }
 }
